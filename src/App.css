@@ -7,12 +7,8 @@ body {
 
 .App {
   text-align: center;
-  background-color: rgba(12, 118, 204, 0.596);
+  background: black;
   min-height: 100vh;
-}
-
-.video-container {
-  padding: 20px;
 }
 
 .App-logo {

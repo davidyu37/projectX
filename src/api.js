@@ -38,7 +38,7 @@ function exchange(data) {
 }
 
 function logError(error) {
-    // console.log("logError", error);
+    console.log("logError", error);
 }
 
 
@@ -71,10 +71,11 @@ const methods = {
             exchange(data);
         })
     },
-    subscribeToLeave() {
+    subscribeToLeave(cb) {
         const self = this
         socket.on('leave', (socketId) => {
             self.someoneLeft(socketId);
+            cb(socketId);
         });
     },
     subscribeToGameUpdate(cb) {

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './Video.css';
 import CLE_LOGO from './assets/cle.png';
 import WAR_LOGO from './assets/war.png';
+import LOGO from './assets/Keepballin.png';
 
 class Video extends Component {
     constructor(props) {
@@ -19,10 +20,10 @@ class Video extends Component {
     render() {
         const {
             stream,
-            gameData
+            gameData,
+            broadcaster
         } = this.props;
         const { homeScore, awayScore} = gameData;
-
         if(stream) {
             return (
                 <div>
@@ -36,7 +37,7 @@ class Video extends Component {
                                 <div className="column score">{homeScore ? homeScore : 0}</div>
                                 <div className="column timer">
                                     {gameData.time && this.addPadding(gameData.time.minutes)}:{gameData.time && this.addPadding(gameData.time.seconds)}
-                                    <br/>
+                                    <hr/>
                                     {gameData.quarter}
                                 </div>
                                 <div className="column score">{awayScore ? awayScore : 0}</div>
@@ -47,7 +48,13 @@ class Video extends Component {
                             <h3 className="team-title">Warriors</h3>
                         </div>
                     </div>
-                    <video className="video-size" src={stream} autoPlay/>
+                    {broadcaster ? 
+                    <video className="video-size" src={stream} autoPlay/> : 
+                    <div className="video-placeholder">
+                        <img className="team-logos" src={LOGO} />
+                        <p>直播讯号停止</p>
+                    </div>
+                    }
                 </div>
             );
         } else {
@@ -62,7 +69,11 @@ class Video extends Component {
                             <div className="scores">
                                 <div className="column score">{homeScore ? homeScore : 0}</div>
                                 <div className="column timer">
-                                    8:20
+                                    --:--
+                                    <hr/>
+                                    <div style={{fontSize: '.5em'}}>
+                                        未开始
+                                    </div>
                                 </div>
                                 <div className="column score">{awayScore ? awayScore : 0}</div>
                             </div>
@@ -72,7 +83,9 @@ class Video extends Component {
                             <h3 className="team-title">Warriors</h3>
                         </div>
                     </div>
-                    <div className="video-size">
+                    <div className="video-placeholder">
+                        <img className="team-logos" src={LOGO} />
+                        <p>直播未开始</p>
                     </div>
                 </div>
             )

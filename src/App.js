@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import logo from './kb-logo.png';
 import './App.css';
 import Video from './Video';
 import socket from './api';
@@ -17,7 +16,8 @@ class App extends Component {
       mediaStream: '',
       gameData: {},
       message: '',
-      messages: []
+      messages: [],
+      broadcaster: null
     }
     this.textChange = this.textChange.bind(this);
     this.sendMessage = this.sendMessage.bind(this);
@@ -36,6 +36,7 @@ class App extends Component {
         socket.createPC(socketID, false, (event, obj) => {
           if (event === 'new_stream') {
             this.setState({
+              broadcaster: socketID,
               mediaStream: URL.createObjectURL(obj.stream)
             });
           }
@@ -47,7 +48,13 @@ class App extends Component {
         });
       })
       socket.subscribeToExchange();
-      socket.subscribeToLeave();
+      socket.subscribeToLeave((socketID) => {
+        if(this.state.broadcaster === socketID) {
+          this.setState({
+            broadcaster: null
+          });
+        }
+      });
 
       this.joinRoom('uclavsharvard')
     });
@@ -62,6 +69,7 @@ class App extends Component {
           this.pc = socket.createPC(socketId, false, (event, obj) => {
             if (event === 'new_stream') {
               this.setState({
+                broadcaster: socketId,
                 mediaStream: URL.createObjectURL(obj.stream)
               });
             }
@@ -106,7 +114,6 @@ class App extends Component {
 
   leaveGame() {
     const { selectedGame } = this.state;
-    console.log('leave', selectedGame);
     if(selectedGame) {
       socket.leaveRoom(selectedGame, (socketID) => {
         this.setState({
@@ -125,7 +132,8 @@ class App extends Component {
       message,
       messages,
       socketID,
-      gameData
+      gameData,
+      broadcaster
     } = this.state;
     const gameOptions = [
       {
@@ -181,7 +189,7 @@ class App extends Component {
             }
         </div> */}
         <div className="video-container">
-          <Video gameData={gameData} stream={mediaStream}/>
+          <Video gameData={gameData} stream={mediaStream} broadcaster={broadcaster}/>
         </div>
         {/* {messages.map((m) => {
           return (
